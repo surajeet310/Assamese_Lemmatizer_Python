@@ -1,7 +1,7 @@
 from pyiwn import pyiwn
 
-#pyiwn.langs()
-#pyiwn.download()
+pyiwn.langs()
+pyiwn.download()
 
 iwn = pyiwn.IndoWordNet('assamese')
 word_list = iwn.all_words()

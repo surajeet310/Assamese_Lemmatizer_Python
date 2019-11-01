@@ -1,6 +1,4 @@
 import io
-import nltk
-from nltk.tokenize import word_tokenize
 from Assamese_Stopwords import stopWord_assamese
 
 
@@ -47,14 +45,11 @@ class Trie_struct_operations(object):
             if ch in currentNode.childNode:
                 currentNode = currentNode.childNode[ch]
                 data.append(ch)
-                if(currentNode.checkEndOfWord()):
-                    found = True
-                    break
-                else:
-                    continue
+                
             else:
                 found = False
                 break
+        found = currentNode.checkEndOfWord()
  
         if(found):
             return ''.join(data)
@@ -63,7 +58,7 @@ class Trie_struct_operations(object):
 
 
 
-def main():
+def getInput(inputString):
     TrieObj = Trie_struct_operations()
     StopWordsObj = stopWord_assamese()
     tokenized_words = []
@@ -74,8 +69,8 @@ def main():
     
     TrieObj.addWords(wordList)
     
-    input_str = input("Enter Input String")
-    tokens = word_tokenize(input_str)
+    input_str = inputString
+    tokens = input_str.split()
 
     for t in tokens:
         tokenized_words.append(t)
@@ -88,20 +83,24 @@ def main():
         temp = TrieObj.searchItems(tokenized_words[word])
         lemmaList.append(temp)
     
-    print("The resultant Lemma from the input string are: ")
-    print(lemmaList)
+    return lemmaList
 
-    output_file_write = open("Output.txt","a")
+
+
+    #print("The resultant Lemma from the input string are: ")
+    #print(lemmaList)
+
+
+    """output_file_write = open("Output.txt","a")
     for i in range(len(lemmaList)):
         output_file_write.write(lemmaList[i])
         output_file_write.write(" ")
     output_file_write.write("\n")
-    output_file_write.close()
+    output_file_write.close()"""
 
 
 
-if __name__ == "__main__":
-    main()
+
 
         
     
