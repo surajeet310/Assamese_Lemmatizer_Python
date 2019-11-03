@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
+import tkinter.ttk as ttk
 import test_lemmatizer as Al
 
 class MainWindow(object):
@@ -8,30 +9,26 @@ class MainWindow(object):
     def __init__(self,rootFrame):
         self.lemma = []
         self.rootFrame = rootFrame
+        self.width = self.rootFrame.winfo_width()
         self.rootFrame.protocol("WM_DELETE_WINDOW",self.on_exit)
-        self.ip_frame = tk.Frame(self.rootFrame)
-        self.tBox = tk.Entry(self.ip_frame)
-        self.sButton = tk.Button(self.ip_frame, text = 'Search Lemma', command = self.searchString)
-        self.browswBtn = tk.Button(self.ip_frame, text='Browse Files', command = self.browseFiles)
+        self.tBox = tk.Entry(self.rootFrame)
+        self.sButton = tk.Button(self.rootFrame,bg="grey",fg="white",text = 'Search Lemma', command = self.searchString)
+        self.browswBtn = tk.Button(self.rootFrame, bg="grey",fg="white",text='Browse Files', command = self.browseFiles)
     
     def on_exit(self):
         if messagebox.askokcancel("Quit","Are you sure you want to fuck off ?"):
             self.rootFrame.destroy()
-
     
-    def createFrame(self):
-        inputFrame = self.ip_frame
-        inputFrame.grid()
         
     def createTextBox(self):
         textBox = self.tBox
-        textBox.grid()
+        textBox.place(x=200,y=122,width=270,height=28)
     
     def createButton(self):
         searchBtn = self.sButton
-        searchBtn.grid()
+        searchBtn.place(x=480,y=120)
         browseBtn = self.browswBtn
-        browseBtn.grid()
+        browseBtn.place(x=480,y=160)
     
     def getInputString(self):
         inputString = self.tBox.get()
@@ -40,6 +37,9 @@ class MainWindow(object):
     def searchString(self,inputStr=None):
         if inputStr == None:
             textStr = self.getInputString()
+            if textStr is '':
+                tk.messagebox.showinfo("Error","Enter a String first !")
+                return
             self.lemma=Al.getInput(textStr)
         else:
             self.lemma=Al.getInput(inputStr)
@@ -51,8 +51,8 @@ class MainWindow(object):
         l1.grid()
         for i in range(len(self.lemma)):
             word = self.lemma[i]
-            label = tk.Label(output_frame,text='{}'.format(word))   
-            label.grid() 
+            label = tk.Label(output_frame,text="{}".format(word))
+            label.grid()
         close_btn_unsaved = tk.Button(output_frame, text="Don't Save and Exit", command = lambda: self.closeOutputWindow(output_frame))
         close_btn_unsaved.grid()
 
@@ -103,7 +103,6 @@ def main():
     root.grid()
     root.geometry("700x400")
     mainW = MainWindow(root)
-    mainW.createFrame()
     mainW.createTextBox()
     mainW.createButton()
     root.mainloop()

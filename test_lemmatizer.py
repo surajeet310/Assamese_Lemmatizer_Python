@@ -51,10 +51,35 @@ class Trie_struct_operations(object):
                 break
         found = currentNode.checkEndOfWord()
  
-        if(found):
+        if(self.searchExceptionalWords(word)):
+            w = self.searchExceptionalWords(word)
+            return w
+        elif(found):
             return ''.join(data)
         else:
             return False
+    
+    def searchExceptionalWords(self,word):
+        exc = dict()
+        otherForms=[]
+        root=[]
+        with open("exceptional.txt","r") as f1:
+            otherForms = f1.read().split()
+        with open("exceptionalRoot.txt","r") as f2:
+            root = f2.read().split()
+        
+        for i in range(len(otherForms)):
+            item1 = otherForms[i]
+            item2 = root[i]
+            exc[item1]=item2
+        
+        if word in exc:
+            temp=exc[word]
+            return temp
+        else:
+            return False
+        
+
 
 
 
