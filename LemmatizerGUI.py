@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
-import tkinter.ttk as ttk
 import test_lemmatizer as Al
 
 class MainWindow(object):
@@ -14,9 +13,12 @@ class MainWindow(object):
         self.tBox = tk.Entry(self.rootFrame)
         self.sButton = tk.Button(self.rootFrame,bg="grey",fg="white",text = 'Search Lemma', command = self.searchString)
         self.browswBtn = tk.Button(self.rootFrame, bg="grey",fg="white",text='Browse Files', command = self.browseFiles)
+        self.head = tk.Label(self.rootFrame,text='Lemmatizer Tool',bg='white',padx=220,pady=20,fg='grey')
+        self.head.place(x=0,y=0)
+        self.head.configure(font=("Times New Roman",30))
     
     def on_exit(self):
-        if messagebox.askokcancel("Quit","Are you sure you want to fuck off ?"):
+        if messagebox.askokcancel("Quit","Are you sure you want to exit?"):
             self.rootFrame.destroy()
     
         
