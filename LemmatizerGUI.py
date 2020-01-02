@@ -1,12 +1,13 @@
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
-import tkinter.ttk as ttk
+import tkinter.scrolledtext as tkst
 import test_lemmatizer as Al
 
 class MainWindow(object):
 
     def __init__(self,rootFrame):
+        self.accList=[]
         self.lemma = []
         self.rootFrame = rootFrame
         self.width = self.rootFrame.winfo_width()
@@ -14,9 +15,12 @@ class MainWindow(object):
         self.tBox = tk.Entry(self.rootFrame)
         self.sButton = tk.Button(self.rootFrame,bg="grey",fg="white",text = 'Search Lemma', command = self.searchString)
         self.browswBtn = tk.Button(self.rootFrame, bg="grey",fg="white",text='Browse Files', command = self.browseFiles)
+        self.head = tk.Label(self.rootFrame,text='Lemmatizer Tool',bg='white',padx=220,pady=20,fg='grey')
+        self.head.place(x=0,y=0)
+        self.head.configure(font=("Times New Roman",30))
     
     def on_exit(self):
-        if messagebox.askokcancel("Quit","Are you sure you want to fuck off ?"):
+        if messagebox.askokcancel("Quit","Are you sure you want to exit?"):
             self.rootFrame.destroy()
     
         
@@ -41,18 +45,29 @@ class MainWindow(object):
                 tk.messagebox.showinfo("Error","Enter a String first !")
                 return
             self.lemma=Al.getInput(textStr)
+            self.accList = Al.getAccuracy(textStr,self.lemma)
         else:
             self.lemma=Al.getInput(inputStr)
+            self.accList = Al.getAccuracy(inputStr,self.lemma)
         output_frame = tk.Tk()
         output_frame.title("Output")
         output_frame.geometry("350x150")
         output_frame.grid()
-        l1 = tk.Label(output_frame,text='The Required Lemma are : ')
-        l1.grid()
-        for i in range(len(self.lemma)):
-            word = self.lemma[i]
-            label = tk.Label(output_frame,text="{}".format(word))
-            label.grid()
+        
+        l2 = tk.Label(output_frame, text='Total number of input words are : {}'.format(self.accList[0]))
+        l2.grid()
+        l3 = tk.Label(output_frame, text='Total number of correctly lemmatized words are :{}'.format(self.accList[1]))
+        l3.grid()
+        l4 = tk.Label(output_frame, text='Total Accuracy Achieved is {}%'.format(self.accList[2]))
+        l4.grid()
+        # l1 = tk.Label(output_frame,text='The Required Lemma are : ')
+        # l1.grid()
+        
+        # for i in range(len(self.lemma)):
+        #     word = self.lemma[i]
+        #     out_text = tk.Label(output_frame,text="{}".format(word))
+        #     out_text.grid()
+        
         close_btn_unsaved = tk.Button(output_frame, text="Don't Save and Exit", command = lambda: self.closeOutputWindow(output_frame))
         close_btn_unsaved.grid()
 
@@ -85,7 +100,7 @@ class MainWindow(object):
             return
         with open(fileName,"r") as f2:
             wordList = f2.read().split()
-
+       
         if FileNotFoundError:
             print("File Not Found")
         

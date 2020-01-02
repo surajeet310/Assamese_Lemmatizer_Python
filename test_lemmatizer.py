@@ -1,5 +1,6 @@
 import io
 from Assamese_Stopwords import stopWord_assamese
+import testExc as tE
 
 
 class Trie_Node_Struct(object):
@@ -19,6 +20,8 @@ class Trie_struct_operations(object):
  
     def __init__(self):
         self.rootNode = self.getNode()
+        self.notFound = []
+        self.counter = 0
  
     def getNode(self):
         return Trie_Node_Struct()
@@ -37,6 +40,9 @@ class Trie_struct_operations(object):
         currentNode.setEndOfWord(True)
  
     def searchItems(self,word):
+        if(self.searchExceptionalWords(word)):
+            w = self.searchExceptionalWords(word)
+            return w
         currentNode = self.rootNode
         found = False
         data =[]
@@ -45,20 +51,54 @@ class Trie_struct_operations(object):
             if ch in currentNode.childNode:
                 currentNode = currentNode.childNode[ch]
                 data.append(ch)
-                
             else:
-                found = False
-                break
+                if(i==0):
+                    break
+                elif(currentNode.checkEndOfWord()):
+                    break
+                else:
+                    continue
         found = currentNode.checkEndOfWord()
- 
-        if(self.searchExceptionalWords(word)):
-            w = self.searchExceptionalWords(word)
-            return w
-        elif(found):
+    
+        if(found):
             return ''.join(data)
         else:
-            return False
+            lemma = self.remove2nd(word)
+            if lemma is not None:
+                return lemma
+            else:
+                self.notFound.append(word)
+                return ''
     
+    def remove2nd(self,word):
+        old = list(word)
+        if(len(old)>=3):
+            redunt = old[1]
+            old.remove(redunt)
+            new = ''.join(old)
+            curr = self.rootNode
+            lemma=[]
+            for j in range(len(new)):
+                c = new[j]
+                if c in curr.childNode:
+                    curr = curr.childNode[c]
+                    lemma.append(c)
+                else:
+                    if(j==0):
+                        break
+                    elif(curr.checkEndOfWord()):
+                        break
+                    else:
+                        continue
+            if(curr.checkEndOfWord()):
+                return ''.join(lemma)
+            else:
+                return None
+        else:
+            return None
+
+
+
     def searchExceptionalWords(self,word):
         exc = dict()
         otherForms=[]
@@ -78,10 +118,8 @@ class Trie_struct_operations(object):
             return temp
         else:
             return False
+    
         
-
-
-
 
 def getInput(inputString):
     TrieObj = Trie_struct_operations()
@@ -100,6 +138,7 @@ def getInput(inputString):
     for t in tokens:
         tokenized_words.append(t)
     
+    
     for w in tokenized_words:
         res = StopWordsObj.search(w)
         if(res):
@@ -108,20 +147,51 @@ def getInput(inputString):
         temp = TrieObj.searchItems(tokenized_words[word])
         lemmaList.append(temp)
     
+    notFoundWords = []
+    newList=[]
+    for nw in TrieObj.notFound:
+        notFoundWords.append(nw)
+    
+    # newList = tE.getPrefixes(notFoundWords)
+    
+    # for w in newList:
+    #     lemmaList.append(w)
+    
+
+
+    # notfoundFile = open("notfoundData.txt","a")
+    # for nw in TrieObj.notFound:
+    #     notfoundFile.write(nw)
+    #     notfoundFile.write("\n")
+    # notfoundFile.close()
     return lemmaList
 
 
 
-    #print("The resultant Lemma from the input string are: ")
-    #print(lemmaList)
-
-
-    """output_file_write = open("Output.txt","a")
-    for i in range(len(lemmaList)):
-        output_file_write.write(lemmaList[i])
-        output_file_write.write(" ")
-    output_file_write.write("\n")
-    output_file_write.close()"""
+def getAccuracy(inputStr,lemmaList):
+    token = inputStr.split()
+    tokenList=[]
+    StopObj = stopWord_assamese()
+    for t in token:
+        tokenList.append(t)
+    for w in tokenList:
+        r = StopObj.search(w)
+        if(r):
+            tokenList.remove(w)
+    for i in lemmaList:
+        if i == '':
+            lemmaList.remove(i)
+    
+    acc = (len(lemmaList))/(len(tokenList))
+    accPer = acc*100
+    x=len(tokenList)
+    y=len(lemmaList)
+    outputlist=[]
+    outputlist.append(x)
+    outputlist.append(y)
+    outputlist.append(accPer) 
+    return outputlist   
+    
 
 
 
