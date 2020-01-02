@@ -1,7 +1,10 @@
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
+<<<<<<< HEAD
 import tkinter.scrolledtext as tkst
+=======
+>>>>>>> ad47fbd9bc6a9e8ebb4aba735d638beb923a5ab6
 import test_lemmatizer as Al
 
 class MainWindow(object):

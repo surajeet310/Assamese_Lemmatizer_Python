@@ -1,4 +1,8 @@
 import io
+<<<<<<< HEAD
+=======
+from Assamese_Stopwords import stopWord_assamese
+>>>>>>> ad47fbd9bc6a9e8ebb4aba735d638beb923a5ab6
 
 
 class Trie_Node_Struct(object):
@@ -18,8 +22,12 @@ class Trie_struct_operations(object):
  
     def __init__(self):
         self.rootNode = self.getNode()
+<<<<<<< HEAD
         self.words = []
         
+=======
+ 
+>>>>>>> ad47fbd9bc6a9e8ebb4aba735d638beb923a5ab6
     def getNode(self):
         return Trie_Node_Struct()
     
@@ -36,6 +44,7 @@ class Trie_struct_operations(object):
             currentNode = currentNode.childNode[ch]
         currentNode.setEndOfWord(True)
  
+<<<<<<< HEAD
                 
 
 
@@ -114,6 +123,129 @@ def getPrefixes(notFoundList):
             lemmaList.remove(w)
     
     return lemmaList
+=======
+    def searchItems(self,word):
+        currentNode = self.rootNode
+        found = False
+        data =[]
+        for i in range(len(word)):
+            ch=word[i]
+            if ch in currentNode.childNode:
+                currentNode = currentNode.childNode[ch]
+                data.append(ch)
+                
+            else:
+                found = False
+                break
+        found = currentNode.checkEndOfWord()
+ 
+        if(found):
+            return ''.join(data)
+        else:
+            x=self.searchDerivatives(word)
+            if x is not None:
+                return x
+            else:
+                return False
+    
+    def searchExceptionalWords(self,word):
+        exc = dict()
+        otherForms=[]
+        root=[]
+        with open("exceptional.txt","r") as f1:
+            otherForms = f1.read().split()
+        with open("exceptionalRoot.txt","r") as f2:
+            root = f2.read().split()
+        
+        for i in range(len(otherForms)):
+            item1 = otherForms[i]
+            item2 = root[i]
+            exc[item1]=item2
+        
+        if word in exc:
+            temp=exc[word]
+            return temp
+        else:
+            return False
+    
+
+    def searchDerivatives(self,word):
+        currentNode = self.rootNode
+        found=False
+        data=[]
+        for c in range(len(word)):
+            ch=word[c]
+            if ch in currentNode.childNode:
+                currentNode = currentNode.childNode[ch]
+                data.append(ch)
+            else:
+                found = False
+                pos = c
+                newWord=self.removeChar(pos,word)
+                self.searchDerivatives(newWord)
+        found = currentNode.checkEndOfWord()
+        if(found):
+            return data
+        else:
+            return None
+
+    def removeChar(self,position,word):
+        charList = list(word)
+        toRemove = word[position]
+        charList.remove(toRemove)
+        finalWord = ''.join(charList)
+        print(finalWord)
+        return finalWord
+
+        
+
+
+
+
+def main():
+    TrieObj = Trie_struct_operations()
+    StopWordsObj = stopWord_assamese()
+    tokenized_words = []
+    lemmaList = []
+    wordList = []
+    with open("aL.txt","r") as file:
+        wordList = file.read().split()
+    
+    TrieObj.addWords(wordList)
+    
+    input_str = input("Enter Sentence")
+    tokens = input_str.split()
+
+    for t in tokens:
+        tokenized_words.append(t)
+    
+    for w in tokenized_words:
+        res = StopWordsObj.search(w)
+        if(res):
+            tokenized_words.remove(w)
+    for word in range(len(tokenized_words)):
+        temp = TrieObj.searchItems(tokenized_words[word])
+        lemmaList.append(temp)
+    
+    #return lemmaList
+
+
+
+    #print("The resultant Lemma from the input string are: ")
+    print(lemmaList)
+
+
+    """output_file_write = open("Output.txt","a")
+    for i in range(len(lemmaList)):
+        output_file_write.write(lemmaList[i])
+        output_file_write.write(" ")
+    output_file_write.write("\n")
+    output_file_write.close()"""
+
+if __name__ == '__main__':main()
+
+
+>>>>>>> ad47fbd9bc6a9e8ebb4aba735d638beb923a5ab6
 
 
         
