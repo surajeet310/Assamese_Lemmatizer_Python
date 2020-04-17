@@ -127,6 +127,7 @@ def getInput(inputString):
     tokenized_words = []
     lemmaList = []
     wordList = []
+    inflected_root = dict()
     with open("aL.txt","r") as file:
         wordList = file.read().split()
     
@@ -145,25 +146,38 @@ def getInput(inputString):
             tokenized_words.remove(w)
     for word in range(len(tokenized_words)):
         temp = TrieObj.searchItems(tokenized_words[word])
-        lemmaList.append(temp)
+        inf = tokenized_words[word]
+        if temp is not '':
+            lemmaList.append(temp)
+            inflected_root[inf] = temp
     
     notFoundWords = []
     newList=[]
     for nw in TrieObj.notFound:
         notFoundWords.append(nw)
     
-    # newList = tE.getPrefixes(notFoundWords)
+    newDict = dict()
+    newList,newDict = tE.getPrefixes(notFoundWords)
     
-    # for w in newList:
-    #     lemmaList.append(w)
+    for w in newList:
+        lemmaList.append(w)
     
+    word_root_f = open("words_root.txt","a")
+    for items in inflected_root:
+        word_root_f.write("{} - {}".format(items,inflected_root[items]))
+        word_root_f.write("\n")
+    for item in newDict:
+        word_root_f.write("{} - {}".format(item,newDict[item]))
+        word_root_f.write("\n")
+    
+    word_root_f.close()
 
 
-    # notfoundFile = open("notfoundData.txt","a")
-    # for nw in TrieObj.notFound:
-    #     notfoundFile.write(nw)
-    #     notfoundFile.write("\n")
-    # notfoundFile.close()
+    notfoundFile = open("notfoundData.txt","a")
+    for nw in TrieObj.notFound:
+        notfoundFile.write(nw)
+        notfoundFile.write("\n")
+    notfoundFile.close()
     return lemmaList
 
 
@@ -184,6 +198,7 @@ def getAccuracy(inputStr,lemmaList):
     
     acc = (len(lemmaList))/(len(tokenList))
     accPer = acc*100
+    accPer = round(accPer,3)
     x=len(tokenList)
     y=len(lemmaList)
     outputlist=[]

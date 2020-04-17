@@ -1,10 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
-<<<<<<< HEAD
 import tkinter.scrolledtext as tkst
-=======
->>>>>>> ad47fbd9bc6a9e8ebb4aba735d638beb923a5ab6
 import test_lemmatizer as Al
 
 class MainWindow(object):
@@ -89,7 +86,7 @@ class MainWindow(object):
         f1 = open(newfile_name,"a")
         for i in range(len(lemmaList)):
             f1.write(lemmaList[i])
-            f1.write(" ")
+            f1.write("\n")
         f1.close()
         tk.messagebox.showinfo("Alert","File Saved")
         op_frame.destroy()

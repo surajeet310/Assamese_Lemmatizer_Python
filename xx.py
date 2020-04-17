@@ -19,7 +19,6 @@ class Trie_struct_operations(object):
     def __init__(self):
         self.rootNode = self.getNode()
         self.words = []
-        self.word_root = dict()
         
     def getNode(self):
         return Trie_Node_Struct()
@@ -69,67 +68,58 @@ class Trie_struct_operations(object):
         lemma=''
         length = len(word1)
         sp_ch = word1[length-1]
-        try:
-            word2.append(word1[0])
-            word2.append(sp_ch)
-            for i in range(1,length):
-                word2.append(word1[i])
-            
-            new = ''.join(word2)
-            lemma=self.search(new)
-            if lemma is not '':
-                return lemma
-            else:
-                extr = self.s3(word)
-                if extr is not '':
-                    nnextr = self.search(extr)
-                    if nnextr is not '':
-                        return nnextr
-                    else:
-                        return ''
-                
+        word2.append(word1[0])
+        word2.append(sp_ch)
+        for i in range(1,length):
+            word2.append(word1[i])
+        
+        new = ''.join(word2)
+        lemma=self.search(new)
+        if lemma is not '':
+            return lemma
+        else:
+            extr = self.s3(word)
+            if extr is not '':
+                nnextr = self.search(extr)
+                if nnextr is not '':
+                    return nnextr
                 else:
                     return ''
-        
-        except IndexError:
-            return ''
+            
+            else:
+                return ''
         
     def s3(self,word):
         w1 = list(word)
-        try:
-            temp = word[1]
-            del(w1[1:2])
-            w1.append(temp)
-            return ''.join(w1)
-        except IndexError:
-            return ''
+        temp = word[1]
+        del(w1[1:2])
+        w1.append(temp)
+        return ''.join(w1)
     
     def s4(self,word):
         word1 = list(word)
         word2=[]
         lemma=''
         length = len(word1)
-        try:
-            sp_ch = word1[length-1]
-            word2.append(word1[0])
-            word2.append(word1[1])
-            word2.append(sp_ch)
-            for i in range(2,length):
-                word2.append(word1[i])
-            
-            new = ''.join(word2)
-            lemma = self.search(new)
-            if lemma is not '':
-                return lemma
-            else:
-                return ''
+        sp_ch = word1[length-1]
+        word2.append(word1[0])
+        word2.append(word1[1])
+        word2.append(sp_ch)
+        for i in range(2,length):
+            word2.append(word1[i])
         
-        except IndexError:
+        new = ''.join(word2)
+        lemma = self.search(new)
+        if lemma is not '':
+            return lemma
+        else:
             return ''
 
 
 
-def getPrefixes(notFoundList):
+
+
+def getPrefix(notFoundList):
     TrieObj = Trie_struct_operations()
     tokenized_words = []
     lemmaList = []
@@ -144,17 +134,15 @@ def getPrefixes(notFoundList):
         lemma = TrieObj.s2(t)
         if lemma is not '':
             lemmaList.append(lemma)
-            TrieObj.word_root[t] = lemma
             tokenized_words.remove(t)
     
     for t in tokenized_words:
         newLemma = TrieObj.s4(t)
         if newLemma is not '':
             lemmaList.append(newLemma)
-            TrieObj.word_root[t] = newLemma
     
     
-    return lemmaList,TrieObj.word_root
+    return lemmaList
 
 
 
